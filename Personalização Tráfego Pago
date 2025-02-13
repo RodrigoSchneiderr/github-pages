@@ -1,0 +1,64 @@
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectItem } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+
+export default function CustomAdsApp() {
+  const [form, setForm] = useState({
+    nome: "",
+    email: "",
+    idade: "",
+    plataforma: "",
+    investimento: 50,
+    objetivo: ""
+  });
+  const [resultado, setResultado] = useState(null);
+
+  const calcularOrcamento = () => {
+    const alcance = form.investimento * 120; // Exemplo: R$1,00 atinge 120 pessoas
+    setResultado({
+      totalInvestido: form.investimento * 30, // Orçamento mensal
+      alcanceMensal: alcance * 30
+    });
+  };
+
+  return (
+    <div className="p-6 max-w-lg mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Personalize sua Estratégia de Tráfego Pago</h1>
+      <Card>
+        <CardContent className="p-4 flex flex-col gap-3">
+          <Input placeholder="Nome" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
+          <Input type="email" placeholder="E-mail" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+          <Input type="number" placeholder="Idade" value={form.idade} onChange={(e) => setForm({ ...form, idade: e.target.value })} />
+          <Select onValueChange={(value) => setForm({ ...form, plataforma: value })}>
+            <SelectItem value="Facebook">Facebook</SelectItem>
+            <SelectItem value="Instagram">Instagram</SelectItem>
+            <SelectItem value="Google Ads">Google Ads</SelectItem>
+            <SelectItem value="TikTok Ads">TikTok Ads</SelectItem>
+          </Select>
+          <Select onValueChange={(value) => setForm({ ...form, objetivo: value })}>
+            <SelectItem value="Conversões">Conversões</SelectItem>
+            <SelectItem value="Engajamento">Engajamento</SelectItem>
+            <SelectItem value="Alcance">Alcance</SelectItem>
+            <SelectItem value="Tráfego para site">Tráfego para site</SelectItem>
+          </Select>
+          <label className="text-sm">Investimento diário: R${form.investimento}</label>
+          <Slider min={10} max={500} step={10} value={form.investimento} onValueChange={(value) => setForm({ ...form, investimento: value })} />
+          <Button onClick={calcularOrcamento}>Calcular Orçamento</Button>
+        </CardContent>
+      </Card>
+
+      {resultado && (
+        <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+          <h2 className="text-lg font-semibold">Resumo da Estratégia</h2>
+          <p>Plataforma: {form.plataforma}</p>
+          <p>Objetivo: {form.objetivo}</p>
+          <p>Total Investido: R${resultado.totalInvestido.toFixed(2)}</p>
+          <p>Alcance Estimado: {resultado.alcanceMensal.toLocaleString()} pessoas</p>
+        </div>
+      )}
+    </div>
+  );
+}
